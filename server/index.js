@@ -40,7 +40,7 @@ class App {
     try {
       this.mongodb = mongoose.connect(
         process.env.MONGODB_URI ||
-          "mongodb://devstart-admin:DevStartIs2Cool@ds231643.mlab.com:31643/devstart",
+        "mongodb://devstart-admin:DevStartIs2Cool@ds231643.mlab.com:31643/devstart",
 
         {
           useNewUrlParser: true,
@@ -49,7 +49,9 @@ class App {
       );
 
       try {
-        sqlDb.sequelize.sync({ force: false }).then(function() {
+        sqlDb.sequelize.sync({
+          force: false
+        }).then(function () {
           console.log("SQL databse is connected");
         });
       } catch (err) {
@@ -64,20 +66,22 @@ class App {
   }
   initMiddleware() {
     app.use(cors());
-    app.use(bodyParser.json({ type: "*/*" })); // Type indicates ALL header types OK
+    app.use(bodyParser.json({
+      type: "*/*"
+    })); // Type indicates ALL header types OK
     app.use(express.static(path.resolve(__dirname, "..", "..", "public"))); // Serve files in our Rect app public directory
     router(app);
     proposalRouter(app);
 
     if (process.env.NODE_ENV === "production")
-      app.use(express.static("client/build"));
+      app.use(express.static("client/public"));
     if (process.env.NODE_ENV === "test") app.use(morgan(() => null));
     else
       app.use(
         morgan(
           "API Request (port " +
-            this.port +
-            "): :method :url :status :response-time ms - :res[content-length]"
+          this.port +
+          "): :method :url :status :response-time ms - :res[content-length]"
         )
       );
   }
@@ -90,7 +94,7 @@ class App {
 
 new App();
 
-process.on("SIGINT", function() {
+process.on("SIGINT", function () {
   console.log("\nGracefully shutting down from SIGINT (Ctrl-C)");
   process.exit();
 });
